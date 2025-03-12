@@ -1,1 +1,186 @@
+/* Reset básico */
+body, h1, p, button {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
 
+body {
+    background-color: #f5f8f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Carrossel de imagens */
+.image-gallery {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px; /* Ajuste conforme necessário */
+    margin: auto;
+}
+
+.image-gallery .main-image img {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+}
+
+.image-gallery button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+.image-gallery .prev {
+    left: 10px; /* Posiciona a seta à esquerda */
+}
+
+.image-gallery .next {
+    right: 10px; /* Posiciona a seta à direita */
+}
+
+.image-gallery button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Detalhes da propriedade */
+.details {
+    margin-top: 20px;
+}
+
+.details h1 {
+    font-size: 22px;
+    color: #333;
+}
+
+.details p {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Comodidades */
+.facilities {
+    margin-top: 10px;
+}
+
+.facilities button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.facilities button:hover {
+    background-color: #0056b3;
+}
+
+#amenities-list {
+    display: none;
+    margin-top: 10px;
+    background: #f1f1f1;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Regras */
+.rules {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Caixa de reserva */
+.reservation-box {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.reservation-box label {
+    font-weight: bold;
+}
+
+.reservation-box select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.reservation-box button {
+    width: 100%;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.reservation-box button:hover {
+    background-color: #218838;
+}
+
+/* Calendário */
+.calendar {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.calendar iframe {
+    width: 100%;
+    height: 400px;
+    border: none;
+    border-radius: 5px;
+}
+
+/* Estilo da Descrição do Apartamento */
+.description {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+}
+
+.description h2 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.description p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+}
