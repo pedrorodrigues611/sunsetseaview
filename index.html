@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Blue Paradise Apartment by Hoperty</title>
+  <title>Sunset Sea View by Hoperty</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
@@ -140,27 +141,847 @@
       border-radius: 5px;
       padding: 5px 10px;
     }
+    /* ========== Calendário (Disponibilidade) ========== */
+    .calendar h3 {
+      margin-bottom: 10px;
+    }
+    .calendar {
+      text-align: center;
+    }
+    .calendar iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+      border-radius: 5px;
+    }
+    /* ========== Área de Comentários (Carousel de 2 por vez) ========== */
+    .comments {
+      font-size: 16px;
+    }
+    .comments h2 {
+      margin-bottom: 10px;
+    }
+    .comments-summary {
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    .comments-carousel {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .comment-arrow {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 50%;
+      transition: background 0.3s;
+    }
+    .comment-arrow:hover {
+      background-color: #ddd;
+    }
+    .comment-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    .comment-slide {
+      display: flex;
+      gap: 20px;
+    }
+    .comment-box {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      width: 250px;
+      background-color: #f9f9f9;
+    }
+    .comment-rating {
+      background-color: var(--primary-color);
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 4px;
+      display: inline-block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .comment-user-date {
+      margin-bottom: 5px;
+    }
+    .comment-user-date strong {
+      margin-right: 5px;
+    }
+    .comment-date {
+      font-size: 14px;
+      color: #333;
+      display: block;
+      margin-top: 3px;
+    }
+    /* ========== Booking Container (Reserva) ========== */
+    .booking-container {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      position: relative;
+    }
+    .booking-container .price {
+      font-size: 22px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+    /* Linha de inputs para data e Nº de pessoas */
+    .booking-inputs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .booking-input {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #fafafa;
+      cursor: pointer;
+      transition: border-color 0.3s;
+      margin-bottom: 10px;
+    }
+    .booking-input:hover { border-color: var(--primary-color); }
+    .booking-input img {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      pointer-events: none;
+    }
+    .booking-input span {
+      font-size: 16px;
+      color: #666;
+      pointer-events: none;
+    }
+    /* Botão Nº de Hóspedes: ocupar 1/3 da width do container */
+    .booking-input.booking-guests {
+      position: relative;
+      flex: 0 0 33.33%;
+    }
+    .booking-input.booking-guests select {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    /* Exibe o número selecionado */
+    #guestsDisplay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    /* ========== Date Picker Customizado ========== */
+    .date-picker-container {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px;
+      width: 300px;
+      display: none;
+      position: absolute;
+      z-index: 999;
+      bottom: 100%;
+      left: 0;
+      margin-bottom: 10px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    }
+    .date-picker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .nav-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--primary-color);
+    }
+    .date-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      text-align: center;
+    }
+    .date-picker-day {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .date-picker-day:hover {
+      background-color: #ddd;
+    }
+    /* Dias bloqueados: fundo esbranquiçado, texto em cinzento, riscado, sem ação */
+    .disabled-day {
+      background-color: #eee;
+      color: #999;
+      text-decoration: line-through;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .selected-day {
+      background-color: var(--primary-color);
+      color: #fff;
+    }
+    .range-day, .hover-range {
+      background-color: var(--primary-color) !important;
+      color: #fff !important;
+    }
+    /* Aviso de estadia mínima – ajustado ao conteúdo */
+    #minNightsMessage {
+      display: none;
+      padding: 5px 10px;
+      background: var(--primary-color);
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      font-size: 14px;
+      position: absolute;
+      white-space: nowrap;
+    }
+    /* ========== Resumo e Breakdown (Reserva) ========== */
+    .resumo-container,
+    .breakdown-container {
+      margin-top: 15px;
+      padding: 10px;
+      background: #f1f1f1;
+      border-radius: 6px;
+      display: none;
+    }
+    .resumo-container p,
+    .breakdown-container p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    .toggle-detalhes {
+      display: inline-block;
+      margin-top: 10px;
+      color: var(--primary-color);
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 14px;
+    }
+    .reserve-btn {
+      width: 100%;
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .reserve-btn:hover { background-color: var(--primary-hover); }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Carrossel de imagens -->
     <div class="image-gallery">
       <button class="prev">&#10094;</button>
       <div class="main-image">
-        <img src="https://i.imgur.com/h9vIQpq.jpeg" alt="Blue Paradise Apartment">
+        <img src="https://i.imgur.com/zWbZWbK.jpeg" alt="Sunset Sea View">
       </div>
       <button class="next">&#10095;</button>
     </div>
+    <!-- Divisão em 2 colunas: Informações da Casa / Reserva -->
     <div class="content-wrapper">
+      <!-- Coluna Esquerda: Informações da Casa -->
       <div class="left-column">
         <div class="description">
           <h1>Blue Paradise Apartment by Hoperty</h1>
           <p>
             O Blue Paradise Apartment encontra-se localizado no Caniço. Este apartamento é novo, espaçoso e moderno, com muita luz natural, vista parcial para o mar e um amplo pátio.
           </p>
+          <p>
+            Está bem localizado: restaurantes, pastelarias e bares a poucos passos, praia a 5 minutos a pé, Funchal a 10 minutos de carro e próximo do aeroporto.<br>
+            Supermercado e cafetaria no mesmo prédio.
+          </p>
+        </div>
+        <div class="details">
+          <p>Funchal - 4 hóspedes - 2 quartos - 2 casas de banho</p>
+          <br><hr><br>
+          <div class="facilities">
+            <p>🍽 Cozinha &nbsp; 🔥 Forno &nbsp; 🌿 Jardim</p>
+            <button id="show-amenities">Mostrar todas as 10 comodidades</button>
+            <div id="amenities-list" style="display:none;">
+              <p>✔ Wi‑Fi rápido &nbsp; ✔ Ar Condicionado &nbsp; ✔ Máquina de Lavar</p>
+              <p>✔ Piscina &nbsp; ✔ TV a Cabo &nbsp; ✔ Estacionamento</p>
+            </div>
+          </div>
+          <br><hr><br>
+          <h2>Regras da casa</h2>
+          <div class="rules">
+            <div class="rule-item">✔ Check-in: 15h</div>
+            <div class="rule-item">✔ Check-out: 11h</div>
+            <div class="rule-item">✔ Crianças permitidas</div>
+            <div class="rule-item">✔ Bebés permitidos</div>
+            <div class="rule-item">❌ Fumar não permitido</div>
+            <div class="rule-item">❌ Festas não permitidas</div>
+          </div>
+          <br><hr><br>
+          <div class="calendar">
+            <h3>Disponibilidade</h3>
+            <iframe src="https://calendar.google.com/calendar/embed?
+src=c4qe8v081ip4g6hfb5v5i99j9jfafsfb%40import.calendar.google.com
+&amp;src=gq3m477imq71fcv56kojh45833nphv7r%40import.calendar.google.com
+&amp;ctz=Europe%2FLisbon" 
+                    style="border: 0" 
+                    width="100%" 
+                    height="400" 
+                    frameborder="0" 
+                    scrolling="no">
+            </iframe>
+          </div>
+          <br><hr><br>
+          <!-- Área de comentários com carousel de 2 por vez -->
+          <div class="comments">
+            <h2>Comentários (7)</h2>
+            <div class="comments-summary">
+              <p>Média de avaliações: <strong>5.00</strong></p>
+            </div>
+            <div class="comments-carousel">
+              <button class="comment-arrow" id="commentPrevBtn" disabled>&#10094;</button>
+              <div class="comment-slide" id="commentSlide">
+                <!-- Comentários renderizados via JS -->
+              </div>
+              <button class="comment-arrow" id="commentNextBtn">&#10095;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Coluna Direita: Reserva -->
+      <div class="right-column">
+        <div class="booking-container">
+          <div class="price">€120/noite</div>
+          <div class="booking-inputs">
+            <div class="booking-input" id="bookingDateInput">
+              <img src="https://img.icons8.com/fluency/48/000000/calendar.png" alt="Calendário">
+              <span>Selecione datas</span>
+            </div>
+            <div class="booking-input booking-guests" id="bookingGuestsInput">
+              <img src="https://img.icons8.com/fluency-systems-regular/48/000000/user.png" alt="Ícone de pessoa">
+              <select id="guests">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+              <span id="guestsDisplay">1</span>
+            </div>
+          </div>
+          <div class="date-picker-container" id="customDatePicker"></div>
+          <div class="resumo-container" id="resumoContainer">
+            <p id="resumoText"></p>
+            <span id="toggleDetalhes" class="toggle-detalhes">Ver detalhes</span>
+          </div>
+          <div class="breakdown-container" id="breakdownContainer">
+            <p id="breakdownText"></p>
+          </div>
+          <button class="reserve-btn" id="reserveBtn" style="display:none;">Reservar</button>
         </div>
       </div>
     </div>
   </div>
+
+  <script>
+    /********************************************
+     * SCRIPT BASE (Carrossel, Amenities)
+     ********************************************/
+    document.addEventListener("DOMContentLoaded", function() {
+      // Carrossel de imagens
+      let currentImageIndex = 0;
+      const images = [
+        "https://i.imgur.com/GEBl3Rv.jpeg",
+"https://i.imgur.com/D2ggBbH.jpeg",
+"https://i.imgur.com/ylCYqKZ.jpeg",
+"https://i.imgur.com/n4HMwJV.jpeg",
+"https://i.imgur.com/KqlPHQk.jpeg",
+"https://i.imgur.com/y2PDUQE.jpeg"
+      ];
+      const mainImage = document.querySelector(".main-image img");
+      const nextButton = document.querySelector(".next");
+      const prevButton = document.querySelector(".prev");
+      function updateImage() { mainImage.src = images[currentImageIndex]; }
+      nextButton.addEventListener("click", function() {
+        currentImageIndex = (currentImageIndex + 1) % images.length;
+        updateImage();
+      });
+      prevButton.addEventListener("click", function() {
+        currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+        updateImage();
+      });
+      
+      // Comodidades
+      const showAmenitiesBtn = document.getElementById("show-amenities");
+      const amenitiesList = document.getElementById("amenities-list");
+      showAmenitiesBtn.addEventListener("click", function() {
+        amenitiesList.style.display = (amenitiesList.style.display === "none") ? "block" : "none";
+      });
+      
+      // Para que toda a área de "nº pessoas" seja clicável
+      const bookingGuestsInput = document.getElementById("bookingGuestsInput");
+      bookingGuestsInput.addEventListener("click", function() {
+        document.getElementById("guests").focus();
+      });
+      
+      // Atualiza o display do nº de hóspedes
+      document.getElementById("guests").addEventListener("change", function() {
+        document.getElementById("guestsDisplay").textContent = this.value;
+      });
+      
+      // Inicializa o carousel de comentários
+      initCommentsCarousel();
+    });
+    
+    /****************************************************
+     * LÓGICA DAS DATAS OCUPADAS (Google Calendar)
+     ****************************************************/
+    const calendarId1 = "c4qe8v081ip4g6hfb5v5i99j9jfafsfb@import.calendar.google.com";
+    const calendarId2 = "gq3m477imq71fcv56kojh45833nphv7r@import.calendar.google.com";
+    const apiKey = "AIzaSyAhj2SIN0rsso2drkyMX6jRd6iGg6C7L6o";
+    async function getBookedDates() {
+      let events = [];
+      const urls = [
+        `https://www.googleapis.com/calendar/v3/calendars/${calendarId1}/events?key=${apiKey}`,
+        `https://www.googleapis.com/calendar/v3/calendars/${calendarId2}/events?key=${apiKey}`
+      ];
+      for (let url of urls) {
+        let response = await fetch(url);
+        let data = await response.json();
+        if (data.items) {
+          data.items.forEach(event => {
+            if (event.start && event.start.date) {
+              // Se existir um período, bloqueie todos os dias do intervalo.
+              let startDate = new Date(event.start.date);
+              let endDate = event.end && event.end.date ? new Date(event.end.date) : new Date(event.start.date);
+              // Em Google Calendar, a data final é exclusiva.
+              while(startDate < endDate) {
+                let y = startDate.getFullYear();
+                let m = String(startDate.getMonth() + 1).padStart(2, "0");
+                let d = String(startDate.getDate()).padStart(2, "0");
+                events.push(`${y}-${m}-${d}`);
+                startDate.setDate(startDate.getDate() + 1);
+              }
+            }
+          });
+        }
+      }
+      return events;
+    }
+    
+    /****************************************************
+     * DATE PICKER CUSTOMIZADO COM NAVEGAÇÃO E HIGHLIGHT DE INTERVALO
+     ****************************************************/
+    let currentCalendarYear, currentCalendarMonth;
+    let currentHoveredDate = null;
+    let selectedCheckin = null, selectedCheckout = null;
+    let bookedDatesGlobal = [];
+    let minNightsMessage;
+    
+    const bookingDateInput = document.getElementById("bookingDateInput");
+    const datePickerContainer = document.getElementById("customDatePicker");
+    const resumoContainer = document.getElementById("resumoContainer");
+    const resumoText = document.getElementById("resumoText");
+    const toggleDetalhes = document.getElementById("toggleDetalhes");
+    const breakdownContainer = document.getElementById("breakdownContainer");
+    const breakdownText = document.getElementById("breakdownText");
+    const reserveBtn = document.getElementById("reserveBtn");
+    
+    bookingDateInput.addEventListener("click", () => {
+      if (datePickerContainer.style.display === "none" || datePickerContainer.style.display === "") {
+        datePickerContainer.style.display = "block";
+        const today = new Date();
+        currentCalendarYear = today.getFullYear();
+        currentCalendarMonth = today.getMonth();
+        generateCalendar(currentCalendarYear, currentCalendarMonth);
+      } else {
+        datePickerContainer.style.display = "none";
+      }
+    });
+    
+    function isBlockedInRange(startDate, endDate) {
+      if (endDate < startDate) return false;
+      let date = new Date(startDate.getTime());
+      while(date <= endDate) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        const ds = `${y}-${m}-${d}`;
+        if (bookedDatesGlobal.includes(ds)) return true;
+        date.setDate(date.getDate() + 1);
+      }
+      return false;
+    }
+    
+    async function generateCalendar(year, month) {
+      if (bookedDatesGlobal.length === 0) {
+        bookedDatesGlobal = await getBookedDates();
+      }
+      datePickerContainer.innerHTML = "";
+      
+      minNightsMessage = document.createElement("div");
+      minNightsMessage.id = "minNightsMessage";
+      minNightsMessage.textContent = "A estadia mínima é 4 noites";
+      datePickerContainer.appendChild(minNightsMessage);
+      
+      const headerDiv = document.createElement("div");
+      headerDiv.className = "date-picker-header";
+      const prevBtn = document.createElement("button");
+      prevBtn.className = "nav-button";
+      prevBtn.innerHTML = "&#10094;";
+      prevBtn.addEventListener("click", () => {
+        const today = new Date();
+        if (year > today.getFullYear() || (year === today.getFullYear() && month > today.getMonth())) {
+          if (month === 0) { month = 11; year--; } else { month--; }
+          currentCalendarYear = year; currentCalendarMonth = month;
+          generateCalendar(year, month);
+        }
+      });
+      headerDiv.appendChild(prevBtn);
+      
+      const monthNames = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+                          "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+      const title = document.createElement("span");
+      title.textContent = monthNames[month] + " " + year;
+      headerDiv.appendChild(title);
+      
+      const nextBtn = document.createElement("button");
+      nextBtn.className = "nav-button";
+      nextBtn.innerHTML = "&#10095;";
+      nextBtn.addEventListener("click", () => {
+        const today = new Date();
+        const maxDate = new Date(today.getFullYear(), today.getMonth() + 12, 1);
+        const currentDisplayed = new Date(year, month, 1);
+        if (currentDisplayed < maxDate) {
+          if (month === 11) { month = 0; year++; } else { month++; }
+          currentCalendarYear = year; currentCalendarMonth = month;
+          generateCalendar(year, month);
+        }
+      });
+      headerDiv.appendChild(nextBtn);
+      datePickerContainer.appendChild(headerDiv);
+      
+      const gridDiv = document.createElement("div");
+      gridDiv.className = "date-picker-grid";
+      const daysOfWeek = ["D","S","T","Q","Q","S","S"];
+      daysOfWeek.forEach(d => {
+        const cell = document.createElement("div");
+        cell.style.fontWeight = "bold";
+        cell.textContent = d;
+        gridDiv.appendChild(cell);
+      });
+      
+      let firstDay = new Date(year, month, 1);
+      let startDay = firstDay.getDay();
+      for (let i = 0; i < startDay; i++) {
+        gridDiv.appendChild(document.createElement("div"));
+      }
+      
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      for (let day = 1; day <= daysInMonth; day++) {
+        const cell = document.createElement("div");
+        cell.className = "date-picker-day";
+        cell.textContent = day;
+        const cellDate = new Date(year, month, day);
+        const dateStr = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+        cell.dataset.date = dateStr;
+        // Bloquear dias anteriores a hoje
+        if (cellDate < today) {
+          cell.classList.add("disabled-day");
+        } else if (selectedCheckin === dateStr || selectedCheckout === dateStr) {
+          cell.classList.add("selected-day");
+          cell.addEventListener("click", () => {
+            selectedCheckin = null; 
+            selectedCheckout = null;
+            currentHoveredDate = null;
+            generateCalendar(currentCalendarYear, currentCalendarMonth);
+            document.querySelector("#bookingDateInput span").textContent = "Selecione datas";
+            resumoContainer.style.display = "none";
+            breakdownContainer.style.display = "none";
+            reserveBtn.style.display = "none";
+          });
+        } else if (bookedDatesGlobal.includes(dateStr)) {
+          cell.classList.add("disabled-day");
+        } else {
+          cell.addEventListener("mouseover", function() {
+            if (selectedCheckin && !selectedCheckout) {
+              currentHoveredDate = dateStr;
+              updateCalendarHighlights();
+            }
+          });
+          cell.addEventListener("mouseout", function() {
+            currentHoveredDate = null;
+            updateCalendarHighlights();
+          });
+          cell.addEventListener("click", () => handleDateSelection(dateStr));
+        }
+        gridDiv.appendChild(cell);
+      }
+      datePickerContainer.appendChild(gridDiv);
+    }
+    
+    function updateCalendarHighlights() {
+      const dayCells = datePickerContainer.querySelectorAll(".date-picker-day");
+      if (!selectedCheckin || !currentHoveredDate) {
+        dayCells.forEach(cell => cell.classList.remove("hover-range"));
+        minNightsMessage.style.display = "none";
+        return;
+      }
+      const checkinDate = new Date(selectedCheckin);
+      const hoveredDate = new Date(currentHoveredDate);
+      if (hoveredDate < checkinDate) {
+        dayCells.forEach(cell => cell.classList.remove("hover-range"));
+        minNightsMessage.style.display = "none";
+        return;
+      }
+      const potentialNights = (hoveredDate - checkinDate) / (1000 * 3600 * 24);
+      const blocked = isBlockedInRange(checkinDate, hoveredDate);
+      if (blocked || potentialNights < 4) {
+        dayCells.forEach(cell => cell.classList.remove("hover-range"));
+        const hoveredCell = datePickerContainer.querySelector(`[data-date="${currentHoveredDate}"]`);
+        if (hoveredCell) {
+          let newTop = hoveredCell.offsetTop - hoveredCell.offsetHeight - 5;
+          newTop = newTop < 0 ? 0 : newTop;
+          minNightsMessage.style.left = hoveredCell.offsetLeft + "px";
+          minNightsMessage.style.top = newTop + "px";
+          minNightsMessage.style.display = "block";
+        }
+      } else {
+        minNightsMessage.style.display = "none";
+        dayCells.forEach(cell => {
+          const cellDate = new Date(cell.dataset.date);
+          if (cellDate >= checkinDate && cellDate <= hoveredDate) {
+            cell.classList.add("hover-range");
+          } else {
+            cell.classList.remove("hover-range");
+          }
+        });
+      }
+    }
+    
+    function formatDate(dateStr) {
+      const parts = dateStr.split("-");
+      return parts[2] + "/" + parts[1] + "/" + parts[0];
+    }
+    
+    function handleDateSelection(dateStr) {
+      if (selectedCheckin && !selectedCheckout) {
+        const checkinDate = new Date(selectedCheckin);
+        const checkoutDate = new Date(dateStr);
+        if (checkoutDate <= checkinDate) return;
+        if (isBlockedInRange(checkinDate, checkoutDate)) return;
+        const nights = (checkoutDate - checkinDate) / (1000 * 3600 * 24);
+        if (nights < 4) return;
+        selectedCheckout = dateStr;
+        datePickerContainer.style.display = "none";
+        showResumo();
+      } else {
+        selectedCheckin = dateStr;
+        selectedCheckout = null;
+      }
+      generateCalendar(currentCalendarYear, currentCalendarMonth);
+    }
+    
+    function calculateNights(checkin, checkout) {
+      const cIn = new Date(checkin);
+      const cOut = new Date(checkout);
+      return (cOut - cIn) / (1000 * 3600 * 24);
+    }
+    
+    /****************************************************
+     * RESUMO E BREAKDOWN (Reserva)
+    ****************************************************/
+    function showResumo() {
+      const nights = calculateNights(selectedCheckin, selectedCheckout);
+      const baseRate = 120;
+      let nightsCost = baseRate * nights;
+      const cleaningFee = 50;
+      let discount = (nights > 7) ? 0.04 * nightsCost : 0;
+      const total = nightsCost - discount + cleaningFee;
+      resumoText.innerHTML = `<p>${formatDate(selectedCheckin)} - ${formatDate(selectedCheckout)}</p>
+                              <p>Total: ${total.toFixed(2)}€</p>`;
+      resumoContainer.style.display = "block";
+      document.querySelector("#bookingDateInput span").textContent = `${formatDate(selectedCheckin)} - ${formatDate(selectedCheckout)}`;
+      reserveBtn.style.display = "block";
+      toggleDetalhes.textContent = "Ver detalhes";
+      breakdownContainer.style.display = "none";
+    }
+    
+    toggleDetalhes.addEventListener("click", () => {
+      if (breakdownContainer.style.display === "block") {
+        breakdownContainer.style.display = "none";
+        toggleDetalhes.textContent = "Ver detalhes";
+      } else {
+        const nights = calculateNights(selectedCheckin, selectedCheckout);
+        const baseRate = 120;
+        let nightsCost = baseRate * nights;
+        const cleaningFee = 50;
+        let discount = (nights > 7) ? 0.04 * nightsCost : 0;
+        const total = nightsCost - discount + cleaningFee;
+        breakdownText.innerHTML = 
+          `<p><strong>Noites:</strong> ${nights} x 120€ = ${nightsCost.toFixed(2)}€</p>` +
+          (discount > 0 ? `<p><strong>Desconto semanal:</strong> -${discount.toFixed(2)}€</p>` : "") +
+          `<p><strong>Taxa de Limpeza:</strong> 50€</p>
+           <hr>
+           <p><strong>Total:</strong> ${total.toFixed(2)}€</p>`;
+        breakdownContainer.style.display = "block";
+        toggleDetalhes.textContent = "Ocultar";
+      }
+    });
+    
+    reserveBtn.addEventListener("click", () => {
+      alert("Reserva concluída!\nCheck-in: " + selectedCheckin +
+            "\nCheck-out: " + selectedCheckout +
+            "\nHóspedes: " + document.getElementById("guests").value);
+    });
+    
+    /****************************************************
+     * CAROUSEL DE COMENTÁRIOS (2 por vez)
+    ****************************************************/
+    function initCommentsCarousel() {
+      const commentsData = [
+        {
+          name: "Pierre",
+          country: "france",
+          date: "January 2025",
+          text: "C'était excelent! Je recommande.",
+          rating: "5.00"
+        },
+        {
+          name: "Alessandra",
+          country: "italy",
+          date: "December 2024",
+          text: "Tutto perfetto, tornerò di sicuro!",
+          rating: "5.00"
+        },
+        {
+          name: "Kevin",
+          country: "uk",
+          date: "November 2024",
+          text: "Everything was great, realy enjoyed my stay.",
+          rating: "5.00"
+        },
+        {
+          name: "Laura",
+          country: "germany",
+          date: "October 2024",
+          text: "Alles war super, wir kommen Wieder!",
+          rating: "5.00"
+        },
+        {
+          name: "Luis",
+          country: "spain",
+          date: "September 2024",
+          text: "Excelente lugar, me encantó!",
+          rating: "5.00"
+        },
+        {
+          name: "Bruno",
+          country: "portugal",
+          date: "August 2024",
+          text: "adorei a estadia, super recomendo.",
+          rating: "5.00"
+        },
+        {
+          name: "Mia",
+          country: "sweden",
+          date: "July 2024",
+          text: "Underbar vistelse! tack.",
+          rating: "5.00"
+        }
+      ];
+      
+      const commentSlide = document.getElementById("commentSlide");
+      const prevBtn = document.getElementById("commentPrevBtn");
+      const nextBtn = document.getElementById("commentNextBtn");
+      
+      let currentIndex = 0;
+      
+      function renderComments() {
+        commentSlide.innerHTML = "";
+        for (let i = 0; i < 2; i++) {
+          const commentIndex = currentIndex + i;
+          if (commentIndex < commentsData.length) {
+            const c = commentsData[commentIndex];
+            const commentBox = document.createElement("div");
+            commentBox.className = "comment-box";
+            let flagUrl = "";
+            switch (c.country) {
+              case "france": flagUrl = "https://img.icons8.com/color/24/france.png"; break;
+              case "italy": flagUrl = "https://img.icons8.com/color/24/italy.png"; break;
+              case "uk": flagUrl = "https://img.icons8.com/color/24/great-britain.png"; break;
+              case "germany": flagUrl = "https://img.icons8.com/color/24/germany.png"; break;
+              case "spain": flagUrl = "https://img.icons8.com/color/24/spain.png"; break;
+              case "portugal": flagUrl = "https://img.icons8.com/color/24/portugal.png"; break;
+              case "sweden": flagUrl = "https://img.icons8.com/color/24/sweden.png"; break;
+              default: flagUrl = "https://img.icons8.com/fluency/24/globe.png";
+            }
+            commentBox.innerHTML = `
+              <div class="comment-rating">
+                <img src="https://img.icons8.com/emoji/20/star-emoji.png" alt="star icon" style="vertical-align: middle;"> ${c.rating}
+              </div>
+              <div class="comment-user-date">
+                <span><strong>${c.name}</strong> <img src="${flagUrl}" alt="${c.country}"></span>
+                <span class="comment-date">${c.date}</span>
+              </div>
+              <p>${c.text}</p>
+            `;
+            commentSlide.appendChild(commentBox);
+          }
+        }
+        prevBtn.disabled = (currentIndex === 0);
+        nextBtn.disabled = (currentIndex >= commentsData.length - 2);
+      }
+      
+      prevBtn.addEventListener("click", () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          renderComments();
+        }
+      });
+      
+      nextBtn.addEventListener("click", () => {
+        if (currentIndex < commentsData.length - 2) {
+          currentIndex++;
+          renderComments();
+        }
+      });
+      
+      renderComments();
+    }
+  </script>
 </body>
 </html>
